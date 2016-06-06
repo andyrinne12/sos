@@ -26,6 +26,7 @@ public class KeyScreen {
         this.gameHeight = gameHeight;
         this.screen = screen;
         initializeTextures();
+        initializeCoords();
         this.watch = 0;
         this.cam=screen.cameraControl;
 
@@ -34,7 +35,9 @@ public class KeyScreen {
 
     private void initializeCoords(){
 
-        coords[1][1]=20;
+        coords = new int[37][3];
+
+   /*     coords[1][1]=20;
         coords[1][2]=455;
 
         coords[2][1]=20;
@@ -63,11 +66,12 @@ public class KeyScreen {
 
         coords[10][1]=20;
         coords[10][2]=455;
-
+*/
+        
         coords[11][1]=20;
         coords[11][2]=455;
 
-        coords[12][1]=90;
+        coords[12][1]=88;
         coords[12][2]=455;
 
         coords[13][1]=160;
@@ -76,7 +80,7 @@ public class KeyScreen {
         coords[14][1]=230;
         coords[14][2]=455;
 
-        coords[15][1]=310;
+        coords[15][1]=305;
         coords[15][2]=455;
 
         coords[16][1]=375;
@@ -88,7 +92,7 @@ public class KeyScreen {
         coords[18][1]=510;
         coords[18][2]=455;
 
-        coords[19][1]=575;
+        coords[19][1]=580;
         coords[19][2]=455;
 
         coords[20][1]=640;
@@ -102,47 +106,49 @@ public class KeyScreen {
         coords[22][1]=120;
         coords[22][2]=520;
 
-        coords[23][1]=20;
+        coords[23][1]=190;
         coords[23][2]=520;
 
-        coords[24][1]=20;
+        coords[24][1]=260;
         coords[24][2]=520;
 
-        coords[25][1]=20;
+        coords[25][1]=335;
         coords[25][2]=520;
 
-        coords[26][1]=20;
+        coords[26][1]=405;
         coords[26][2]=520;
 
-        coords[27][1]=20;
+        coords[27][1]=475;
         coords[27][2]=520;
 
-        coords[28][1]=20;
+        coords[28][1]=540;
         coords[28][2]=520;
 
-        coords[29][1]=20;
+        coords[29][1]=610;
         coords[29][2]=520;
 
-        coords[30][1]=20;
-        coords[30][2]=455;
+        //rand 3
 
-        coords[31][1]=20;
-        coords[31][2]=455;
+        coords[30][1]=120;
+        coords[30][2]=588;
 
-        coords[32][1]=20;
-        coords[32][2]=455;
+        coords[31][1]=188;
+        coords[31][2]=588;
 
-        coords[33][1]=20;
-        coords[33][2]=455;
+        coords[32][1]=258;
+        coords[32][2]=588;
 
-        coords[34][1]=20;
-        coords[34][2]=455;
+        coords[33][1]=330;
+        coords[33][2]=588;
 
-        coords[35][1]=20;
-        coords[35][2]=455;
+        coords[34][1]=405;
+        coords[34][2]=588;
 
-        coords[36][1]=20;
-        coords[36][2]=455;
+        coords[35][1]=475;
+        coords[35][2]=588;
+
+        coords[36][1]=545;
+        coords[36][2]=588;
 
 
     }
@@ -167,20 +173,8 @@ public class KeyScreen {
         BitmapFont morse = renderer.felix;
         morse.getData().setScale(3,3);
 
-        shaper.rect(190,520,60,60);
-        shaper.rect(260,520,60,60);
-        shaper.rect(335,520,60,60);
-        shaper.rect(405,520,60,60);
-        shaper.rect(475,520,60,60);
-        shaper.rect(540,520,60,60);
-        shaper.rect(610,520,60,60);
-
-        shaper.rect(120,590,60,60);
-        shaper.rect(20,590,60,60);
-        shaper.rect(20,590,60,60);
-        shaper.rect(20,590,60,60);
-        shaper.rect(20,590,60,60);
-        shaper.rect(20,590,60,60);
+        for(int i=11;i<=coords.length-1;i++)
+            shaper.rect(coords[i][1],coords[i][2],60,60);
 
 
         // se afiseaza litera care este apasata
@@ -241,7 +235,7 @@ public class KeyScreen {
         verifyF(screenX,screenY,ratioX,ratioY);
         verifyG(screenX,screenY,ratioX,ratioY);
         verifyH(screenX,screenY,ratioX,ratioY);
-
+        verifyJ(screenX,screenY,ratioX,ratioY);
         verifyK(screenX,screenY,ratioX,ratioY);
         verifyL(screenX,screenY,ratioX,ratioY);
         verifyZ(screenX,screenY,ratioX,ratioY);
@@ -803,10 +797,10 @@ public class KeyScreen {
         int y2=y+60;
 
         if (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY) {
-            if(ch=='Y')
+            if(ch=='P')
                 ch=' ';
             else {
-                ch = 'Y';
+                ch = 'P';
                 watch = 0;
                 cont = 0;
                 cam.turnOnFlash();
@@ -1768,10 +1762,10 @@ public class KeyScreen {
         int y2=y+60;
 
         if (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= 590 * ratioY && screenY <= 650 * ratioY) {
-            if(ch=='H')
+            if(ch=='N')
                 ch=' ';
             else {
-                ch = 'H';
+                ch = 'N';
                 watch = 0;
                 cont = 0;
                 cam.turnOnFlash();
@@ -1837,10 +1831,10 @@ public class KeyScreen {
         int y2=y+60;
 
         if (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= 590 * ratioY && screenY <= 650 * ratioY) {
-            if(ch=='H')
+            if(ch=='M')
                 ch=' ';
             else {
-                ch = 'H';
+                ch = 'M';
                 watch = 0;
                 cont = 0;
                 cam.turnOnFlash();
