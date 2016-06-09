@@ -25,8 +25,9 @@ public class InputHandler implements InputProcessor {
             else  if(thecode.gameStatus == thecode.stats.KeyScreen)
             {
                 thecode.gameStatus=thecode.stats.Menu;
+       //         screen.cameraControl.turnOffFlash();
+       //         screen.cameraControl.releaseCamera();
                 screen.keyMenu=null;
-                screen.cameraControl.turnOffFlash();
             }
             else if(thecode.gameStatus == thecode.stats.Info)
                 thecode.gameStatus= thecode.stats.Menu;

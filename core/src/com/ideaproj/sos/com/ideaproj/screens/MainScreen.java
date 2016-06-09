@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.DeviceCameraControl;
+import com.ideaproj.sos.DeviceControl;
 import com.ideaproj.sos.InputHandler;
 import com.ideaproj.sos.thecode;
 
@@ -18,12 +19,12 @@ public class MainScreen implements Screen{
     private GameRenderer gameRenderer;
     float screenWidth,screenHeight,gameHeight,gameWidth;
     private InputHandler input;
-    public DeviceCameraControl cameraControl;
+    public DeviceControl deviceControl;
     private TextureRegion background,aboutBackground;
     private Texture backgrounT,aboutBackgroundT;
     public KeyScreen keyMenu;
 
-    public MainScreen(DeviceCameraControl cameraControl) {
+    public MainScreen(DeviceControl deviceControl) {
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         gameHeight = 640;
@@ -34,7 +35,7 @@ public class MainScreen implements Screen{
         input = new InputHandler(this);
         Gdx.input.setInputProcessor(input);
         Gdx.input.setCatchBackKey(true);
-        this.cameraControl = cameraControl;
+        this.deviceControl = deviceControl;
     }
 
     @Override

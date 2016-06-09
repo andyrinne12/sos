@@ -5,7 +5,7 @@ import com.ideaproj.sos.com.ideaproj.screens.MainScreen;
 
 public class thecode extends Game {
 
-    private DeviceCameraControl cameraControl;
+    private DeviceControl deviceControl;
     public enum stats{
         Splash,
         Menu,
@@ -17,14 +17,14 @@ public class thecode extends Game {
     };
     public static stats gameStatus=stats.Menu;
 
-    public thecode(DeviceCameraControl cameraControl) {
-        this.cameraControl = cameraControl;
+    public thecode(DeviceControl deviceControl) {
+        this.deviceControl = deviceControl;
     }
 
     @Override
 	public void create() {
         gameStatus=stats.Menu;
-		setScreen(new MainScreen(cameraControl));
+		setScreen(new MainScreen(deviceControl));
 	}
 
     @Override

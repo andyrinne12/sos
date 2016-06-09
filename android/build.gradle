@@ -9,15 +9,15 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
-            jniLibs.srcDirs = ['libs']
-        }
+            jniLibs.srcDirs = ['libs']}
+
 
         instrumentTest.setRoot('tests')
     }
     defaultConfig {
         applicationId "com.ideaproj.sos"
         minSdkVersion 8
-        targetSdkVersion 23
+        targetSdkVersion 22
     }
 }
 
