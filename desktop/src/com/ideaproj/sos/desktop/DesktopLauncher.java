@@ -2,13 +2,13 @@ package com.ideaproj.sos.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.ideaproj.sos.DeviceCameraControl;
+import com.ideaproj.sos.DeviceControl;
 import com.ideaproj.sos.thecode;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new thecode(new DeviceCameraControl() {
+		new LwjglApplication(new thecode(new DeviceControl() {
 			@Override
 			public void turnOnFlash() {
 
@@ -27,6 +27,16 @@ public class DesktopLauncher {
 			@Override
 			public void getCamera() {
 
+			}
+
+			@Override
+			public void readySensor() {
+
+			}
+
+			@Override
+			public float getLight() {
+				return 0;
 			}
 		}), config);
 	}

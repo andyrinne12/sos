@@ -15,8 +15,8 @@ public class GameRenderer {
     public BitmapFont felix;
     float gameWidth,gameHeight;
     private OrthographicCamera cam;
-    public SpriteBatch batcher;
-    public ShapeRenderer shapeRenderer;
+    private SpriteBatch batcher;
+    private ShapeRenderer shapeRenderer;
     private MainScreen screen;
 
 
@@ -40,22 +40,22 @@ public class GameRenderer {
 
         Gdx.gl.glClearColor(10 / 255.0f, 15 / 255.0f, 230 / 255.0f, 1f);
 
-    batcher.begin();
-        batcher.enableBlending();
         shapeRenderer.setAutoShapeType(true);
         shapeRenderer.begin();
 
-       if(thecode.gameStatus== thecode.stats.Menu || thecode.gameStatus== thecode.stats.Info)
-            screen.mainRender(this);
-        else if(thecode.gameStatus == thecode.stats.KeyScreen )
-           screen.keyMenu.render(this);
+        screen.mainRender(this);
 
-
-    batcher.end();
     shapeRenderer.end();
 
 
     }
 
+    public SpriteBatch getBatcher() {
+        return batcher;
     }
+
+    public ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
+    }
+}
 

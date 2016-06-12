@@ -19,20 +19,7 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
 
-        if(keycode== Input.Keys.BACK) {
-            if (thecode.gameStatus == thecode.stats.Menu)
-                Gdx.app.exit();
-            else  if(thecode.gameStatus == thecode.stats.KeyScreen)
-            {
-                thecode.gameStatus=thecode.stats.Menu;
-       //         screen.cameraControl.turnOffFlash();
-       //         screen.cameraControl.releaseCamera();
-                screen.keyMenu=null;
-            }
-            else if(thecode.gameStatus == thecode.stats.Info)
-                thecode.gameStatus= thecode.stats.Menu;
-
-        }
+        screen.keyDown(keycode);
         return false;
     }
 
@@ -51,10 +38,7 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if(thecode.gameStatus== thecode.stats.Menu)
         screen.touch(screenX,screenY,pointer,button);
-        else if(thecode.gameStatus== thecode.stats.KeyScreen)
-            screen.keyMenu.touch(screenX,screenY,pointer,button);
 
         return false;
     }

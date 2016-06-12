@@ -3,7 +3,7 @@ package com.ideaproj.sos.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.ideaproj.sos.DeviceCameraControl;
+import com.ideaproj.sos.DeviceControl;
 import com.ideaproj.sos.thecode;
 
 public class HtmlLauncher extends GwtApplication {
@@ -15,7 +15,7 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new thecode(new DeviceCameraControl() {
+                return new thecode(new DeviceControl() {
                         @Override
                         public void turnOnFlash() {
 
@@ -34,6 +34,16 @@ public class HtmlLauncher extends GwtApplication {
                         @Override
                         public void getCamera() {
 
+                        }
+
+                        @Override
+                        public void readySensor() {
+
+                        }
+
+                        @Override
+                        public float getLight() {
+                                return 0;
                         }
                 });
                 }

@@ -11,6 +11,7 @@ public class thecode extends Game {
         Menu,
         KeyScreen,
         TextScreen,
+        ReceiveScreen,
         Info,
         Credits,
         Settings

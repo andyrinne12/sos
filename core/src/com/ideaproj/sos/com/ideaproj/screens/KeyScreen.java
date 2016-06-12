@@ -21,14 +21,15 @@ public class KeyScreen {
     private float speed = 2;
     private int coords[][];
 
-    public KeyScreen(float gameWidth, float gameHeight, MainScreen screen) {
-        this.gameWidth = gameWidth;
-        this.gameHeight = gameHeight;
+    public KeyScreen( MainScreen screen) {
+        this.gameWidth = screen.getGameWidth();
+        this.gameHeight = screen.getGameHeight();
         this.screen = screen;
         initializeTextures();
         initializeCoords();
         this.watch = 0;
-        this.deviceControl = screen.deviceControl;
+        this.deviceControl = screen.getDeviceControl();
+        deviceControl.getCamera();
 
 
     }
@@ -165,10 +166,12 @@ public class KeyScreen {
     }
 
     public void render(GameRenderer renderer) {
-        SpriteBatch batcher = renderer.batcher;
-        ShapeRenderer shaper = renderer.shapeRenderer;
+        SpriteBatch batcher = renderer.getBatcher();
+        ShapeRenderer shaper = renderer.getShapeRenderer();
 
+        batcher.begin();
         batcher.draw(background, 0, 0, gameWidth * 2, gameHeight * 2);
+        batcher.end();
         //se deseneaza fundalul
 
 
@@ -180,6 +183,9 @@ public class KeyScreen {
 
 
         // se afiseaza litera care este apasata
+
+
+        batcher.begin();
 
         if (ch == '0') morse.draw(batcher, "0", 150, 770);
         else if (ch == '1') morse.draw(batcher, "1", 150, 770);
@@ -217,7 +223,7 @@ public class KeyScreen {
         else if (ch == 'B') morse.draw(batcher, "B", 150, 770);
         else if (ch == 'N') morse.draw(batcher, "N", 150, 770);
         else if (ch == 'M') morse.draw(batcher, "M", 150, 770);
-
+        batcher.end();
 
     }
 
