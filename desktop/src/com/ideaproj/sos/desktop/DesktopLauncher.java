@@ -2,7 +2,7 @@ package com.ideaproj.sos.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.ideaproj.sos.DeviceControl;
+import com.ideaproj.sos.tools.DeviceControl;
 import com.ideaproj.sos.thecode;
 
 public class DesktopLauncher {
@@ -36,6 +36,21 @@ public class DesktopLauncher {
 
 			@Override
 			public float getLight() {
+				return 0;
+			}
+
+			@Override
+			public boolean isCamera() {
+				return false;
+			}
+
+			@Override
+			public void readyAltitudeSensor() {
+
+			}
+
+			@Override
+			public int getHeight() {
 				return 0;
 			}
 		}), config);

@@ -1,4 +1,4 @@
-package com.ideaproj.sos;
+package com.ideaproj.sos.tools;
 
 
 public interface DeviceControl {
@@ -18,5 +18,11 @@ public interface DeviceControl {
     void readySensor();
 
     float getLight();
+
+    boolean isCamera();
+
+    void readyAltitudeSensor();
+
+    int getHeight();
 
 }

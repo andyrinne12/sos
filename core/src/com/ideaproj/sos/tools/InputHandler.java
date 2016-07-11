@@ -1,15 +1,14 @@
-package com.ideaproj.sos;
+package com.ideaproj.sos.tools;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.ideaproj.sos.com.ideaproj.screens.MainScreen;
+import com.ideaproj.sos.screens.MainScreen;
 
 
 
 public class InputHandler implements InputProcessor {
 
     private MainScreen screen;
+    private boolean touched;
 
 
     public InputHandler(MainScreen screen) {
@@ -38,13 +37,15 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        screen.touch(screenX,screenY,pointer,button);
+        this.touched = true;
+        screen.touch(screenX, screenY, pointer, button);
 
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        this.touched = false;
         return false;
     }
 
@@ -62,4 +63,9 @@ public class InputHandler implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
+    public boolean isTouched() {
+        return touched;
+    }
+
 }

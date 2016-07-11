@@ -8,19 +8,18 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.provider.Settings;
 import android.util.Log;
 
-public class AndroidDeviceController implements DeviceControl{
+public class AndroidDeviceController implements com.ideaproj.sos.tools.DeviceControl {
 
     private Camera camera;
     private Camera.Parameters params;
     private AndroidLauncher activity;
-    private boolean isFlashOn=false;
-    private SensorManager myManager;
-    private Sensor sensor;
-    private float lightLevel;
-    private SensorEventListener sensorEventListener;
+    private boolean isFlashOn=false,heightFound=false;
+    private SensorManager myManager,myManager2;
+    private Sensor sensor,presureSensor;
+    private float lightLevel,pressure,height;
+    private SensorEventListener sensorEventListener,presureSensorEventListener;
 
     public AndroidDeviceController(AndroidLauncher activity)
     {
@@ -32,20 +31,19 @@ public class AndroidDeviceController implements DeviceControl{
         if(isFlashSupported()){
         if (!isFlashOn) {
             if (camera == null || params == null) {
-                return;
+                throw new RuntimeException();
             }
-            System.out.println("wiajdlajjl");
             params = camera.getParameters();
             params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             camera.setParameters(params);
             camera.startPreview();
             isFlashOn = true;
         }
-            else throw new RuntimeException();
-
 
     }
-}
+      //  else throw new RuntimeException();
+
+    }
 
     @Override
     public void turnOffFlash() {
@@ -54,16 +52,14 @@ public class AndroidDeviceController implements DeviceControl{
                 if (camera == null || params == null) {
                     return;
                 }
-                for (int i = 1; i <= 100; i++)
-                    System.out.println("wiajdlajjl");
-                params = camera.getParameters();
+                 params = camera.getParameters();
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                 camera.setParameters(params);
                 //       camera.stopPreview();
                 isFlashOn = false;
 
             }
-        } else throw new RuntimeException();
+        }// else throw new RuntimeException();
     }
 
     // Get the camera
@@ -89,7 +85,6 @@ public class AndroidDeviceController implements DeviceControl{
             @Override
             public void onSensorChanged(SensorEvent event) {
                 lightLevel = event.values[0];
-                System.out.println(event.values[0]);
             }
 
             @Override
@@ -118,5 +113,38 @@ public class AndroidDeviceController implements DeviceControl{
 
         return isFlashOn;
 
+    }
+
+    public boolean isCamera()
+    {
+        return camera!=null;
+    }
+
+    @Override
+    public void readyAltitudeSensor()
+    {
+        myManager2 =(SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+        presureSensor = myManager2.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        presureSensorEventListener = new SensorEventListener() {
+
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                 pressure = event.values[0];
+                height= SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE,pressure);
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+            myManager2.registerListener(presureSensorEventListener,presureSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+    @Override
+    public int getHeight() {
+        return (int)height;
     }
 }

@@ -1,35 +1,46 @@
 package com.ideaproj.sos;
 
 import com.badlogic.gdx.Game;
-import com.ideaproj.sos.com.ideaproj.screens.MainScreen;
+import com.ideaproj.sos.screens.MainScreen;
+
+import java.util.Random;
 
 public class thecode extends Game {
 
-    private DeviceControl deviceControl;
-    public enum stats{
+    private com.ideaproj.sos.tools.DeviceControl deviceControl;
+
+    public enum stats {
         Splash,
         Menu,
         KeyScreen,
-        TextScreen,
         ReceiveScreen,
-        Info,
-        Credits,
-        Settings
-    };
-    public static stats gameStatus=stats.Menu;
+        IntroReceiveScreen,
+        Info
+    }
 
-    public thecode(DeviceControl deviceControl) {
+    ;
+    public static stats gameStatus = stats.Menu;
+
+    public thecode(com.ideaproj.sos.tools.DeviceControl deviceControl) {
         this.deviceControl = deviceControl;
     }
 
     @Override
-	public void create() {
-        gameStatus=stats.Menu;
-		setScreen(new MainScreen(deviceControl));
-	}
+    public void create() {
+        gameStatus = stats.Menu;
+        setScreen(new MainScreen(deviceControl));
+    }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         super.dispose();
+    }
+
+
+    public static int getRandom(int min, int max) {
+        Random rand = new Random();
+        int n = max - min + 1;
+        int i = rand.nextInt() % n;
+        return i + min;
     }
 }

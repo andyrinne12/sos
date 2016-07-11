@@ -1,4 +1,4 @@
-package com.ideaproj.sos.com.ideaproj.screens;
+package com.ideaproj.sos.tools;
 
 
 import com.badlogic.gdx.Gdx;
@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.ideaproj.sos.thecode;
+import com.ideaproj.sos.screens.MainScreen;
 
 
 public class GameRenderer {
 
-    public BitmapFont felix;
+    public BitmapFont morse;
     float gameWidth,gameHeight;
     private OrthographicCamera cam;
     private SpriteBatch batcher;
@@ -32,7 +32,7 @@ public class GameRenderer {
         batcher.setProjectionMatrix(cam.combined);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(cam.combined);
-        felix = new BitmapFont(Gdx.files.internal("felix.fnt"),true);
+        morse = new BitmapFont(Gdx.files.internal("ort.fnt"),true);
 
     }
 
@@ -41,7 +41,6 @@ public class GameRenderer {
         Gdx.gl.glClearColor(10 / 255.0f, 15 / 255.0f, 230 / 255.0f, 1f);
 
         shapeRenderer.setAutoShapeType(true);
-        shapeRenderer.begin();
 
         screen.mainRender(this);
 

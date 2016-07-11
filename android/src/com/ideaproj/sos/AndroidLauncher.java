@@ -12,8 +12,8 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-        DeviceControl deviceControl =  new AndroidDeviceController(this);
-    //    cameraControl.turnOnFlash();
+        com.ideaproj.sos.tools.DeviceControl deviceControl =  new AndroidDeviceController(this);
+        //    cameraControl.turnOnFlash();
 
         initialize(new thecode(deviceControl), config);
     }
