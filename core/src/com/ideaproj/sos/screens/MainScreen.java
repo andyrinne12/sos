@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.*;
+import com.ideaproj.sos.tools.DeviceControl;
 import com.ideaproj.sos.tools.GameRenderer;
 import com.ideaproj.sos.tools.InputHandler;
 
@@ -28,7 +29,7 @@ public class MainScreen implements Screen {
     private ReceiverScreen receiveMenu;
     private com.ideaproj.sos.screens.IntroReceiveScreen introReceiveMenu;
 
-    public MainScreen(com.ideaproj.sos.tools.DeviceControl deviceControl) {
+    public MainScreen(DeviceControl deviceControl) {
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         gameHeight = 640;
