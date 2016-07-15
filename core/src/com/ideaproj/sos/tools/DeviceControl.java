@@ -25,4 +25,5 @@ public interface DeviceControl {
 
     int getHeight();
 
+    void close();
 }

@@ -10,6 +10,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.badlogic.gdx.Gdx;
+
 public class AndroidDeviceController implements com.ideaproj.sos.tools.DeviceControl {
 
     private Camera camera;
@@ -146,5 +148,13 @@ public class AndroidDeviceController implements com.ideaproj.sos.tools.DeviceCon
     @Override
     public int getHeight() {
         return (int)height;
+    }
+
+    @Override
+    public void close()
+    {
+        Gdx.app.exit();
+        activity.finish();
+        System.exit(0);
     }
 }

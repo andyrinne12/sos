@@ -1,6 +1,8 @@
 package com.ideaproj.sos.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.tools.GameRenderer;
 import com.ideaproj.sos.thecode;
+import com.ideaproj.sos.tools.ResourceLoader;
 
 public class IntroReceiveScreen {
 
@@ -88,10 +91,11 @@ public class IntroReceiveScreen {
     }
 
     private void initializeTextures() {
-        backgrounT = new Texture(Gdx.files.internal("receiverBackground.jpg"));
+        ResourceLoader resources = screen.getResources();
+
+        backgrounT = resources.receiverBackground;
         background = new TextureRegion(backgrounT);
         background.flip(false, true);
-
     }
 
     //update

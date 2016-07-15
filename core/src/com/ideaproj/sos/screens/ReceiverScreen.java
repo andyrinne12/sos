@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.*;
+import com.ideaproj.sos.tools.ResourceLoader;
 
 public class ReceiverScreen {
 
@@ -101,7 +102,9 @@ public class ReceiverScreen {
     }
 
     private void initializeTextures() {
-        backgrounT = new Texture(Gdx.files.internal("receiverBackground.jpg"));
+        ResourceLoader resources = screen.getResources();
+
+        backgrounT = resources.receiverBackground;
         background = new TextureRegion(backgrounT);
         background.flip(false, true);
 
@@ -250,7 +253,7 @@ public class ReceiverScreen {
                 if (speed >= 1)
                     speed -= 0.5;
             if (touchX > 620 && touchX < 700 && touchY > 1115 && touchY < 1195)
-                if (speed <= 2.5)
+                if (speed <= 3.5)
                     speed += 0.5;
             if(touchX > 70 && touchX <280  && touchY >920 && touchY < 1030)
             {
@@ -385,7 +388,7 @@ public class ReceiverScreen {
         shaper.setColor(Color.BLACK);
         shaper.rect(335, 1120, 70, 70);
 
-        if (speed > 3)
+        if (speed > 3.5)
             shaper.setColor(Color.LIGHT_GRAY);
         else shaper.setColor(lightGold);
         shaper.rect(620, 1115, 80, 80);

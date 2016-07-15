@@ -7,6 +7,7 @@ import com.ideaproj.sos.screens.MainScreen;
 import com.ideaproj.sos.screens.SplashScreen;
 import com.ideaproj.sos.tools.DeviceControl;
 import com.ideaproj.sos.tools.ResourceLoader;
+
 import java.util.Random;
 
 public class thecode extends Game {
@@ -20,12 +21,16 @@ public class thecode extends Game {
         KeyScreen,
         ReceiveScreen,
         IntroReceiveScreen,
-        Info
-    };
+        Info,
+        Credits
+    }
+
+    ;
 
     public static stats gameStatus = null;
 
     public thecode(com.ideaproj.sos.tools.DeviceControl deviceControl) {
+        super();
         this.deviceControl = deviceControl;
     }
 
@@ -36,19 +41,20 @@ public class thecode extends Game {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                resources = new ResourceLoader();
-                resources.initializeResources();
+                System.out.println("stage 1");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
+                        System.out.println("stage 2");
+                        resources = new ResourceLoader();
+                        resources.initializeResources();
+                        System.out.println("stage 3");
                         gameStatus = stats.SplashReady;
                     }
                 });
 
             }
-
-
-        });
+        }).start();
     }
 
     @Override
@@ -58,6 +64,10 @@ public class thecode extends Game {
 
     public DeviceControl getDeviceControl() {
         return deviceControl;
+    }
+
+    public ResourceLoader getResources() {
+        return resources;
     }
 
     public static int getRandom(int min, int max) {

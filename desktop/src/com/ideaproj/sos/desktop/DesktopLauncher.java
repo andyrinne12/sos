@@ -53,6 +53,11 @@ public class DesktopLauncher {
 			public int getHeight() {
 				return 0;
 			}
+
+			@Override
+			public void close() {
+
+			}
 		}), config);
 	}
 }

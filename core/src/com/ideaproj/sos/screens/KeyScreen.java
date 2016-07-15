@@ -3,15 +3,17 @@ package com.ideaproj.sos.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ideaproj.sos.tools.DeviceControl;
 import com.ideaproj.sos.tools.GameRenderer;
+import com.ideaproj.sos.tools.ResourceLoader;
 
 public class KeyScreen {
 
@@ -30,16 +32,16 @@ public class KeyScreen {
     private float speed;
     private int coords[][];
     private char[] messageText;
-    private int textLength;
     private final int maxLength = 31 * 6;
-    private int currentLetter, messageLength;
+    private int currentLetter;
+    private Music beep;
 
     public KeyScreen(MainScreen screen) {
         this.screen = screen;
         this.gameWidth = screen.getGameWidth();
         this.gameHeight = screen.getGameHeight();
         this.screen = screen;
-        this.font = screen.getGameRenderer().morse;
+        this.font = screen.getResources().font1;
 
         initializeTextures();
         initializeCoords();
@@ -114,6 +116,7 @@ public class KeyScreen {
 
             }
         };
+
     }
 
     //initializations
@@ -241,11 +244,13 @@ public class KeyScreen {
     }
 
     private void initializeTextures() {
+        ResourceLoader resources = screen.getResources();
 
-        backgrounT = new Texture(Gdx.files.internal("keyBackground.jpg"));
+        backgrounT = resources.keyScreenBackground;
         background = new TextureRegion(backgrounT);
         background.flip(false, true);
 
+        beep = resources.beep;
 
     }
 
@@ -269,8 +274,9 @@ public class KeyScreen {
         renderEnableVibrationButton(batcher, shaper);
         renderEditTextButton(batcher, shaper);
         renderStartTransmittButton(batcher, shaper);
-        renderAddAltitudeButton(batcher,shaper);
-    }//aici desenezi butoanele? aici desenez tot da
+        renderAddAltitudeButton(batcher, shaper);
+        renderSpeedButton(batcher, shaper);
+    }//aici desenezi butoanele? aici desenez tot damai
 
     private void renderTextScreen(SpriteBatch batcher, ShapeRenderer shaper) {
         //mini-screen for text
@@ -289,13 +295,13 @@ public class KeyScreen {
         font.setColor(lightGold);
         font.getData().setScale(0.5f, 0.5f);
         for (int i = 0; i <= Math.min(maxLength - 1, messageText.length - 1); i++) {
-            if (i > currentLetter)
+            if (i >= currentLetter)
                 font.setColor(Color.LIGHT_GRAY);
             else
                 font.setColor(lightGold);
             font.draw(batcher, String.valueOf(messageText[i]), 50 + i % 31 * 20, 700 + ((i / 31)) * 35);
         }
-            batcher.end();
+        batcher.end();
     }//..ecranul e 720 latime pe 1280 i daca acum e 490 si pana jos e 1280 iti dai seama ca 10 unitati e nesemnificativ
 
     private void renderEnableLightButton(SpriteBatch batcher, ShapeRenderer shaper) {
@@ -386,16 +392,77 @@ public class KeyScreen {
     private void renderAddAltitudeButton(SpriteBatch batcher, ShapeRenderer shaper) {
         shaper.begin(ShapeRenderer.ShapeType.Filled);
         shaper.setColor(lightGold);
-        shaper.rect(60, 960, 170, 100);
+        shaper.rect(60, 1120, 170, 100);
         shaper.setColor(Color.BLACK);
-        shaper.rect(60 + 5, 960 + 5, 160, 90);
+        shaper.rect(60 + 5, 1120 + 5, 160, 90);
         shaper.end();
 
         batcher.begin();
         font.setColor(lightGold);
-        font.getData().setScale(0.4f,0.4f);
-        font.draw(batcher, " Add" + '\n' + "Altitude", 70, 985);
+        font.getData().setScale(0.4f, 0.4f);
+        font.draw(batcher, " Add" + '\n' + "Altitude", 70, 1145);
         batcher.end();
+
+    }
+
+    private void renderSpeedButton(SpriteBatch batcher, ShapeRenderer shaper) {
+
+        shaper.begin(ShapeRenderer.ShapeType.Filled);
+        shaper.setColor(lightGold);
+        shaper.rect(70, 960, 160, 90);
+        shaper.setColor(Color.BLACK);
+        shaper.rect(75, 965, 150, 80);
+
+        if (speed == 0.5)
+            shaper.setColor(Color.LIGHT_GRAY);
+        else shaper.setColor(lightGold);
+        shaper.rect(15, 975, 60, 60);
+        shaper.setColor(Color.BLACK);
+        shaper.rect(20, 980, 50, 50);
+
+        if (speed == 4)
+            shaper.setColor(Color.LIGHT_GRAY);
+        else shaper.setColor(lightGold);
+        shaper.rect(225, 975, 60, 60);
+        shaper.setColor(Color.BLACK);
+        shaper.rect(230, 980, 50, 50);
+        shaper.end();
+
+        batcher.begin();
+        font.getData().setScale(1f, 1f);
+        if (speed == 0.5)
+            font.setColor(Color.LIGHT_GRAY);
+        else font.setColor(lightGold);
+        font.draw(batcher, "-", 22, 980);
+        if (speed == 4)
+            font.setColor(Color.LIGHT_GRAY);
+        else font.setColor(lightGold);
+        font.draw(batcher, "+", 232, 980);
+
+        font.getData().setScale(0.45f, 0.45f);
+        font.setColor(lightGold);
+        font.draw(batcher, "Speed", 100, 970);
+        if (speed == 1)
+            font.setColor(lightGold);
+        else font.setColor(230 / 255f, 95 / 255f, 28 / 255f, 1);
+        font.getData().setScale(0.4f, 0.4f);
+        font.draw(batcher, "X" + (float) speed, 110, 1005);
+        batcher.end();
+
+     /*   if (speed != 1) {
+            shaper.setColor(230 / 255f, 95 / 255f, 28 / 255f, 1);
+            shaper.begin(ShapeRenderer.ShapeType.Line);
+            shaper.rect(5, 1120, 310, 75);
+            shaper.end();
+
+            batcher.begin();
+            font.getData().setScale(0.25f, 0.25f);
+            font.draw(batcher, "We strongly reccomend you" + '\n' + "to use x1 speed unless " + '\n' + "you know the transmitter's " + '\n' + "exact speed", 10, 1125);
+            batcher.end();
+
+
+        }
+    */
 
     }
 
@@ -420,18 +487,17 @@ public class KeyScreen {
             if (lightEnabled) {
                 lightEnabled = false;
                 deviceControl.turnOffFlash();
-            }
-            else lightEnabled = true;
+            } else lightEnabled = true;
         } else if (rad2 <= 65) {
-            if (soundEnabled)
+            if (soundEnabled) {
+                beep.stop();
                 soundEnabled = false;
-            else soundEnabled = true;
+            } else soundEnabled = true;
         } else if (rad3 <= 65) {
             if (vibrationEnabled) {
                 vibrationEnabled = false;
                 Gdx.input.cancelVibrate();
-            }
-            else vibrationEnabled = true;
+            } else vibrationEnabled = true;
         } else if (touchX >= 320 && touchX <= 470 && touchY >= 960 && touchY <= 1060)
             Gdx.input.getTextInput(messageBox, "Enter your message here:", String.copyValueOf(messageText), null);
         else if (touchX >= 500 && touchX <= 690 && touchY >= 960 && touchY <= 1060) {
@@ -445,11 +511,16 @@ public class KeyScreen {
             } else {
                 messageFocus = false;
                 keyboardFocus = true;
-                ch='\0';
+                ch = '\0';
             }
-        }
-        else if(touchX >=60 && touchX <=230 && touchY >=960 && touchY <=1060){
-         float height = deviceControl.getHeight();
+        } else if (touchX >= 15 && touchX <= 75 && touchY >= 975 && touchY <= 1035) {
+            if (speed >= 1)
+                speed -= 0.5;
+        } else if (touchX >= 225 && touchX <= 285 && touchY >= 975 && touchY <= 1035) {
+            if (speed <= 3.5)
+                speed += 0.5;
+        } else if (touchX >= 60 && touchX <= 230 && touchY >= 1120 && touchY <= 1180) {
+            int height = deviceControl.getHeight();
             String tempText = String.copyValueOf(messageText);
             tempText = tempText + String.valueOf(height);
             messageText = tempText.toCharArray();
@@ -459,14 +530,6 @@ public class KeyScreen {
     // ciclul principal infinit
 
     public void update(float delta) {
-
-        System.out.println("Keyboard: " + keyboardFocus);
-        System.out.println("Message: " + messageFocus);
-        System.out.println("Character: " + ch);
-        System.out.println("Sent:" + characterSent);
-        System.out.println("Started sending: " + characterSendStarted);
-        System.out.println("Time: " + watch);
-
 
         //se actualizeaza cronometrul
         watch += delta;
@@ -548,16 +611,14 @@ public class KeyScreen {
                     messageFocus = false;
                     keyboardFocus = true;
                 } else {
-                    if (messageText[currentLetter+1] != ' ' &&  messageText[currentLetter] !=' ') {
+                    if (messageText[currentLetter + 1] != ' ' && messageText[currentLetter] != ' ') {
                         if (watch >= 3 / speed) {
-                            deviceControl.turnOffFlash();
                             characterSendStarted = false;
                             characterSent = false;
                             currentLetter++;
                             watch = 0;
                         }
                     } else {
-                        deviceControl.turnOffFlash();
                         characterSendStarted = false;
                         characterSent = false;
                         currentLetter++;
@@ -698,12 +759,16 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'Q' && keyboardFocus)
+            if (ch == 'Q' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'Q';
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) {
+                    beep.play();
+                }
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
@@ -716,12 +781,14 @@ public class KeyScreen {
         if (cont == 0) {
             if (watch >= 3 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.stop();
                 if (lightEnabled) deviceControl.turnOffFlash();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.play();
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
@@ -729,12 +796,14 @@ public class KeyScreen {
         } else if (cont == 2) {
             if (watch >= 3 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.stop();
                 if (lightEnabled) deviceControl.turnOffFlash();
                 cont++;
             }
         } else if (cont == 3) {
             if (watch >= 1 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
                 cont++;
@@ -742,12 +811,14 @@ public class KeyScreen {
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.stop();
                 if (lightEnabled) deviceControl.turnOffFlash();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.play();
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
@@ -755,6 +826,7 @@ public class KeyScreen {
         } else if (cont == 6) {
             if (watch >= 3 / speed) {
                 watch = 0;
+                if (soundEnabled) beep.stop();
                 if (lightEnabled) deviceControl.turnOffFlash();
                 cont = 0;
                 ch = ' ';
@@ -772,14 +844,16 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'W' && keyboardFocus)
+            if (ch == 'W' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'W';
                 watch = 0;
                 cont = 0;
 
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -791,12 +865,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -804,12 +880,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -817,6 +895,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -831,13 +910,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'E' && keyboardFocus)
+            if (ch == 'E' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'E';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -849,6 +930,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -863,13 +945,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'R' && keyboardFocus)
+            if (ch == 'R' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'R';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -881,12 +965,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -894,12 +980,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -907,6 +995,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -921,13 +1010,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'T' && keyboardFocus)
+            if (ch == 'T' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'T';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -939,6 +1030,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -953,13 +1045,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'Y' && keyboardFocus)
+            if (ch == 'Y' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'Y';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -971,12 +1065,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -984,6 +1080,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -991,18 +1088,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1010,6 +1110,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1026,13 +1127,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'U' && keyboardFocus)
+            if (ch == 'U' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'U';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1044,12 +1147,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1057,6 +1162,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1064,12 +1170,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1086,13 +1194,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'I' && keyboardFocus)
+            if (ch == 'I' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'I';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1104,12 +1214,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1117,6 +1229,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1133,13 +1246,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'O' && keyboardFocus)
+            if (ch == 'O' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'O';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1151,12 +1266,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1164,6 +1281,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1171,12 +1289,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1193,13 +1313,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'P' && keyboardFocus)
+            if (ch == 'P' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'P';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1211,12 +1333,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1224,6 +1348,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1231,18 +1356,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1250,6 +1378,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1264,15 +1393,17 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'A' && keyboardFocus)
+            if (ch == 'A' && keyboardFocus) {
                 ch = ' ';
                 // daca cand apesi butonul si este deja apasat...se anuleaza
-            else {
+                beep.stop();
+            } else {
                 ch = 'A';
                 watch = 0;
                 cont = 0;
                 // initializeaza cronometrul si contorul
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 // incepe primul semnal luminos
@@ -1290,12 +1421,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1305,6 +1438,7 @@ public class KeyScreen {
                 cont = 0;
                 ch = ' ';
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 if (messageFocus) characterSent = true;
             }
         }
@@ -1317,13 +1451,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'S' && keyboardFocus)
+            if (ch == 'S' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'S';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1335,12 +1471,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1348,6 +1486,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1355,12 +1494,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1375,13 +1516,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'D' && keyboardFocus)
+            if (ch == 'D' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'D';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1393,12 +1536,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1406,6 +1551,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1413,12 +1559,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 4;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1433,13 +1581,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'F' && keyboardFocus)
+            if (ch == 'F' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'F';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1451,12 +1601,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1464,6 +1616,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1471,18 +1624,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1490,6 +1646,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1504,13 +1661,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'G' && keyboardFocus)
+            if (ch == 'G' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'G';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1522,12 +1681,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1535,6 +1696,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1542,12 +1704,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1562,13 +1726,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'H' && keyboardFocus)
+            if (ch == 'H' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'H';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1580,12 +1746,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1593,6 +1761,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1600,18 +1769,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1619,6 +1791,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1633,13 +1806,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'H' && keyboardFocus)
+            if (ch == 'H' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'H';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1651,12 +1826,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1664,6 +1841,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1671,18 +1849,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1690,6 +1871,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1704,13 +1886,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'K' && keyboardFocus)
+            if (ch == 'K' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'K';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1722,12 +1906,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1735,6 +1921,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1742,12 +1929,14 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1762,13 +1951,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'L' && keyboardFocus)
+            if (ch == 'L' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'L';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -1780,12 +1971,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1793,6 +1986,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1800,18 +1994,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1819,6 +2016,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1833,13 +2031,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'Z' && keyboardFocus)
+            if (ch == 'Z' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'Z';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1851,12 +2051,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1864,6 +2066,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1871,18 +2074,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1890,6 +2096,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1904,13 +2111,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'X' && keyboardFocus)
+            if (ch == 'X' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'X';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1922,12 +2131,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -1935,6 +2146,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -1942,18 +2154,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -1961,6 +2176,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -1975,13 +2191,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'C' && keyboardFocus)
+            if (ch == 'C' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'C';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -1993,12 +2211,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2006,6 +2226,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2013,18 +2234,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2032,6 +2256,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -2046,13 +2271,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'V' && keyboardFocus)
+            if (ch == 'V' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'V';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2064,12 +2291,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2077,6 +2306,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2084,18 +2314,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2103,6 +2336,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -2117,13 +2351,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'B' && keyboardFocus)
+            if (ch == 'B' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'B';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2135,12 +2371,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2148,6 +2386,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2155,18 +2394,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2174,6 +2416,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -2188,13 +2431,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'N' && keyboardFocus)
+            if (ch == 'N' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'N';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2206,12 +2451,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2219,7 +2466,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
-                if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -2234,13 +2481,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'M' && keyboardFocus)
+            if (ch == 'M' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = 'M';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2252,12 +2501,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2265,6 +2516,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont = 0;
                 ch = ' ';
                 if (messageFocus) characterSent = true;
@@ -2281,13 +2533,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '0' && keyboardFocus)
+            if (ch == '0' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '0';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2299,12 +2553,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2312,6 +2568,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2319,18 +2576,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2338,12 +2598,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2351,6 +2613,8 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2366,13 +2630,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '1' && keyboardFocus)
+            if (ch == '1' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '1';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2384,12 +2650,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2397,6 +2665,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2404,18 +2673,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2423,12 +2695,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2436,6 +2710,8 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2451,13 +2727,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '2' && keyboardFocus)
+            if (ch == '2' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '2';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2469,12 +2747,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2482,6 +2762,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2489,18 +2770,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2508,12 +2792,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2521,6 +2807,8 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2536,13 +2824,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '3' && keyboardFocus)
+            if (ch == '3' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '3';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2554,12 +2844,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2567,6 +2859,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2574,18 +2867,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2593,12 +2889,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2606,6 +2904,8 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2621,13 +2921,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '4' && keyboardFocus)
+            if (ch == '4' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '4';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2639,12 +2941,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2652,6 +2956,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2659,18 +2964,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2678,12 +2986,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2691,6 +3001,8 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2706,13 +3018,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '5' && keyboardFocus)
+            if (ch == '5' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '5';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
             }
@@ -2724,12 +3038,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2737,6 +3053,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2744,18 +3061,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2763,12 +3083,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2776,6 +3098,8 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2791,13 +3115,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '6' && keyboardFocus)
+            if (ch == '6' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '6';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2809,12 +3135,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2822,6 +3150,7 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2829,18 +3158,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2848,12 +3180,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2861,6 +3195,8 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -2876,13 +3212,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '7' && keyboardFocus)
+            if (ch == '7' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '7';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2894,12 +3232,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2907,6 +3247,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2914,18 +3255,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2933,12 +3277,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -2947,6 +3293,9 @@ public class KeyScreen {
                 watch = 0;
                 cont = 0;
                 ch = ' ';
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
+
                 if (messageFocus) characterSent = true;
             }
         }
@@ -2961,13 +3310,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '8' && keyboardFocus)
+            if (ch == '8' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '8';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -2979,12 +3330,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -2992,6 +3345,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -2999,18 +3353,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -3018,12 +3375,14 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -3031,6 +3390,8 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }
@@ -3046,13 +3407,15 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == '9' && keyboardFocus)
+            if (ch == '9' && keyboardFocus) {
                 ch = ' ';
-            else {
+                beep.stop();
+            } else {
                 ch = '9';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.cancelVibrate();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
             }
@@ -3064,12 +3427,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 1) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -3077,6 +3442,7 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 3) {
@@ -3084,18 +3450,21 @@ public class KeyScreen {
                 watch = 0;
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 5) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
@@ -3103,12 +3472,14 @@ public class KeyScreen {
             if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
+                if (soundEnabled) beep.stop();
                 cont++;
             }
         } else if (cont == 7) {
             if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
+                if (soundEnabled) beep.play();
                 if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
                 cont++;
             }
@@ -3116,6 +3487,8 @@ public class KeyScreen {
             if (watch >= 1 / speed) {
                 watch = 0;
                 cont = 0;
+                if (soundEnabled) beep.stop();
+                if (lightEnabled) deviceControl.turnOffFlash();
                 ch = ' ';
                 if (messageFocus) characterSent = true;
             }

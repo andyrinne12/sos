@@ -45,12 +45,14 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        this.touched = false;
+
+        screen.touchUp(screenX,screenY,pointer,button);
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        screen.touchDragged(screenX,screenY,pointer);
         return false;
     }
 
@@ -62,10 +64,6 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
-    }
-
-    public boolean isTouched() {
-        return touched;
     }
 
 }

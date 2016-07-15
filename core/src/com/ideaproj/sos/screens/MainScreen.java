@@ -15,9 +15,11 @@ import com.ideaproj.sos.*;
 import com.ideaproj.sos.tools.DeviceControl;
 import com.ideaproj.sos.tools.GameRenderer;
 import com.ideaproj.sos.tools.InputHandler;
+import com.ideaproj.sos.tools.ResourceLoader;
 
 public class MainScreen implements Screen {
 
+    private final thecode main;
     private InputMultiplexer multiplexer;
     private com.ideaproj.sos.tools.GameRenderer gameRenderer;
     float screenWidth, screenHeight, gameHeight, gameWidth;
@@ -28,8 +30,13 @@ public class MainScreen implements Screen {
     private KeyScreen keyMenu;
     private ReceiverScreen receiveMenu;
     private com.ideaproj.sos.screens.IntroReceiveScreen introReceiveMenu;
+    private ResourceLoader resources;
+    private AboutScreen aboutScreen;
+    private CreditsScreen creditsScreen;
 
-    public MainScreen(DeviceControl deviceControl) {
+    public MainScreen(DeviceControl deviceControl, ResourceLoader resources,thecode main) {
+        this.resources = resources;
+        this.main = main;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         gameHeight = 640;
@@ -91,8 +98,11 @@ public class MainScreen implements Screen {
 
     public void touch(int screenX, int screenY, int pointer, int button) {
 
+
         float ratioX = screenWidth / (gameWidth * 2);
         float ratioY = screenHeight / (gameHeight * 2);
+        int touchX = (int)(screenX/ratioX);
+        int touchY = (int)(screenY/ratioY);
 
 
         if (thecode.gameStatus == thecode.stats.KeyScreen)
@@ -101,30 +111,61 @@ public class MainScreen implements Screen {
             receiveMenu.touch(screenX, screenY, pointer, button);
         else if (thecode.gameStatus == thecode.stats.IntroReceiveScreen)
             introReceiveMenu.touch(screenX, screenY, pointer, button);
+        else if(thecode.gameStatus == thecode.stats.Info)
+        {
 
+        }
+        else if(thecode.gameStatus == thecode.stats.Credits)
+        {
+
+        }
         else {
-            if (screenX >= 0 * ratioX && screenX <= 500 * ratioX && screenY >= 280 * ratioY && screenY <= 410 * ratioY) {
+            if (touchX >= 0   && touchX <= 500   && touchY >= 280   && touchY <= 410  ) {
                 thecode.gameStatus = thecode.stats.KeyScreen;
                 keyMenu = new KeyScreen(this);
             }
-            if (screenX >= 0 * ratioX && screenX <= 500 * ratioX && screenY >= 440 * ratioY && screenY <= 570 * ratioY) {
+            if (touchX >= 0   && touchX <= 500   && touchY >= 440   && touchY <= 570  ) {
                 thecode.gameStatus = thecode.stats.ReceiveScreen;
                 receiveMenu = new ReceiverScreen(this);
             }
-            if (screenX >= 0 * ratioX && screenX <= 500 * ratioX && screenY >= 600 * ratioY && screenY <= 730 * ratioY) {
+            if (touchX >= 0   && touchX <= 500   && touchY >= 600   && touchY <= 730  ) {
                 thecode.gameStatus = thecode.stats.IntroReceiveScreen;
-                introReceiveMenu = new com.ideaproj.sos.screens.IntroReceiveScreen(this);
+                introReceiveMenu = new IntroReceiveScreen(this);
+            }
+            if(touchX >= gameWidth*2-500 && touchX <=gameWidth*2 && touchY >= 750 && touchY <=880  )
+            {
+                thecode.gameStatus = thecode.stats.Info;
+                aboutScreen = new AboutScreen(this);
+            }
+            if(touchX >= gameWidth*2-500 && touchX <=gameWidth*2 && touchY >= 910 && touchY <=1040  )
+            {
+                thecode.gameStatus = thecode.stats.Credits;
+                creditsScreen = new CreditsScreen(this);
             }
         }
 
 
     }
 
+    public void touchUp(int screenX,int screenY,int pointer,int button)
+    {
+        if(thecode.gameStatus == thecode.stats.Info)
+        aboutScreen.touchUp();
+
+    }
+
+    public void touchDragged(int screenX, int screenY, int pointer) {
+
+        if(thecode.gameStatus == thecode.stats.Info)
+            aboutScreen.touchDragged(screenX,screenY);
+    }
+
     public void keyDown(int keycode) {
 
         if (keycode == Input.Keys.BACK) {
-            if (thecode.gameStatus == thecode.stats.Menu)
-                Gdx.app.exit();
+            if (thecode.gameStatus == thecode.stats.Menu) {
+                deviceControl.close();
+            }
             else if (thecode.gameStatus == thecode.stats.KeyScreen) {
                 keyMenu = null;
                 thecode.gameStatus = thecode.stats.Menu;
@@ -134,22 +175,26 @@ public class MainScreen implements Screen {
                 receiveMenu.keyBack();
             } else if (thecode.gameStatus == thecode.stats.IntroReceiveScreen)
                 introReceiveMenu.keyBack();
+            else if(thecode.gameStatus == thecode.stats.Info)
+                thecode.gameStatus = thecode.stats.Menu;
+            else if(thecode.gameStatus == thecode.stats.Credits)
+                thecode.gameStatus = thecode.stats.Menu;
         }
 
     }
 
     private void texturesInitialize() {
 
-        backgrounT = new Texture(Gdx.files.internal("main2.jpg"));
-        aboutBackgroundT = new Texture(Gdx.files.internal("about.jpg"));
+        backgrounT = resources.mainBackground;
         background = new TextureRegion(backgrounT);
-        aboutBackground = new TextureRegion(aboutBackgroundT);
         background.flip(false, true);
-        aboutBackground.flip(false, true);
     }
 
-    public void mainRender(com.ideaproj.sos.tools.GameRenderer renderer) {
-        if (thecode.gameStatus == thecode.stats.Menu || thecode.gameStatus == thecode.stats.Info)
+    public void mainRender(GameRenderer renderer) {
+
+        System.out.println(thecode.gameStatus);
+
+        if (thecode.gameStatus == thecode.stats.Menu)
             render(renderer);
         else if (thecode.gameStatus == thecode.stats.KeyScreen)
             keyMenu.render(renderer);
@@ -157,33 +202,33 @@ public class MainScreen implements Screen {
             receiveMenu.render(renderer);
         else if (thecode.gameStatus == thecode.stats.IntroReceiveScreen)
             introReceiveMenu.render(renderer);
-
+        else if (thecode.gameStatus == thecode.stats.Info)
+            aboutScreen.render(renderer);
+        else if(thecode.gameStatus == thecode.stats.Credits)
+            creditsScreen.render(renderer);
 
     }
 
-    private void render(com.ideaproj.sos.tools.GameRenderer renderer) {
+    private void render(GameRenderer renderer) {
 
         BitmapFont felix = renderer.morse;
         SpriteBatch batcher = renderer.getBatcher();
         ShapeRenderer shaper = renderer.getShapeRenderer();
 
         batcher.begin();
-        if (thecode.gameStatus == thecode.stats.Menu)
             batcher.draw(background, 0, 0, gameWidth * 2, gameHeight * 2);
-        else if (thecode.gameStatus == thecode.stats.Info)
-            batcher.draw(aboutBackground, 0, 0, gameWidth * 2, gameHeight * 2);
         batcher.end();
 
         shaper.begin();
         shaper.set(ShapeRenderer.ShapeType.Line);
         shaper.setColor(Color.RED);
-
+      //  shaper.rect(gameWidth*2-500,910,500,130);
         //   shaper.rect(0, 600, 500, 130);// mai facem unul acum? ..e nevoie sa intrebi? da stai sa ma gandesc pot lua o foaie? dc?...
         //    shaper.rect(0,440,500,130);//te critic..dar nu ma iau as de tine...ziceam le las asa?da
         shaper.end();
     }
 
-    public com.ideaproj.sos.tools.DeviceControl getDeviceControl() {
+    public DeviceControl getDeviceControl() {
         return deviceControl;
 
     }
@@ -196,11 +241,11 @@ public class MainScreen implements Screen {
         return gameWidth;
     }
 
-    public com.ideaproj.sos.tools.InputHandler getInput() {
+    public InputHandler getInput() {
         return input;
     }
 
-    public com.ideaproj.sos.tools.GameRenderer getGameRenderer() {
+    public GameRenderer getGameRenderer() {
         return gameRenderer;
     }
 
@@ -212,12 +257,9 @@ public class MainScreen implements Screen {
         this.introReceiveMenu = introReceiveMenu;
     }
 
-    public float getScreenWidth() {
-        return screenWidth;
+    public ResourceLoader getResources() {
+        return resources;
     }
 
-    public float getScreenHeight() {
-        return screenHeight;
-    }
 }
 

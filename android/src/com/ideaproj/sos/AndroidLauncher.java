@@ -16,6 +16,7 @@ public class AndroidLauncher extends AndroidApplication {
         //    cameraControl.turnOnFlash();
 
         initialize(new thecode(deviceControl), config);
+
     }
 
 }
