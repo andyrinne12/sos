@@ -61,6 +61,6 @@ Al doilea buton este dedicat interpretării automate a unul mesaj. Înainte de a
 Al treilea buton ne introduce in meniul pentru decodarea manuală. Se poate întâmpla ca semnalele luminoase să nu atingă senzorul dispozitivului. În această situație, vom introduce mesajul utilizând butoanele pentru punct și linie. Un semnal mai scurt este echivalentul punctului, iar un semnal mai lung al liniei. Sfârșitul unuei litere sau cifre va fii semnalată printr-o pauză scurtă, iar finalul unui cuvânt o pauză mai lungă între flashurile luminoase. Dacă introduceți incorect o linie sau un punct, ori chiar o întreagă litera, utilizați butoanele Delete last character și Delete last letter. Butonul clear screen va goli ecranul.
 </p>
 <p>
-Butonul Documentation din ecranul principal va poate oferi mai multe informatii cu privire la istoria Codului Morse, utilizari ale acestuia sau modalitati de invatare.
+În meniul Documentation din ecranul principal va poate oferi mai multe informatii cu privire la istoria Codului Morse, utilizari ale acestuia sau modalitati de invatare.
 </p>
 
