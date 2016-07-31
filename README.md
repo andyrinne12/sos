@@ -69,7 +69,7 @@ Al treilea buton ne introduce in meniul pentru decodarea manuală. Se poate înt
 <p>
 Fisiere ce aparțin suportului Gradle: 'settings.gradle', 'gradlew', 'gradlew.bat', 'gradle.properties', 'build.gradle', 'gradle/wrapper/gradle-wrapper.jar', 'gradle/wrapper/gradle-wrapper.properties', 'android/build.gradle, project.properties', 'core/build.gradle'
 <br><br>
-Fisiere nefolosite: folder: 'desktop/...' , '.gitignore'
+Fisiere nefolosite: folder: 'desktop/...' 
 <br><br>
 Surse Java scrise de noi: 'core/src/com/ideaproj/thecode.java' 'core/src/com/ideaproj/screens/AboutScreen.java, CreditsScreen.java, IntroReceiveScreen.java, KeyScreen.java, MainScreen.java, ReceiverScreen.java, SplashScreen.java' 'core/src/com/ideaproj/tools/DeviceControl.java, GameRenderer.java, InputHandler.java, ResourceLoader.java' 'android/src/com/android/ideaproj/sos/AndroidDeviceController.java, AndroidLauncher.java'
 <br<br>
