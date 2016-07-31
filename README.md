@@ -77,5 +77,5 @@ Manifest: 'android/AndroidManifest.xml'
 <br><br>
 Resurse: 'android/assets/...', ' 'android/res/...'
 <br><br>
-Librariile LibGDX folosite se află pe un repository online din Maven și sunt accesate de fisierele Gradle( se pot vizualiza link-urile in fisierele gradle.build)
+Librariile LibGDX folosite se află pe un repository online din Maven și sunt accesate de fisierele Gradle( se pot vizualiza link-urile in fisierele gradle.build): com.badlogic.gdx
 
