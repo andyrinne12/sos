@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.tools.GameRenderer;
 import com.ideaproj.sos.tools.ResourceLoader;
 
-/**
- * Created by Andy on 14.07.2016.
- */
+
 
 public class CreditsScreen {
 

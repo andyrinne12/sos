@@ -14,9 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ideaproj.sos.thecode;
 
-/**
- * Created by Ioana on 12.07.2016.
- */
+
 public class SplashScreen implements Screen {
 
     private final thecode main;

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.ideaproj.sos.tools.DeviceControl;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -12,9 +13,10 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-        com.ideaproj.sos.tools.DeviceControl deviceControl =  new AndroidDeviceController(this);
+        DeviceControl deviceControl =  new AndroidDeviceController(this);
         //    cameraControl.turnOnFlash();
 
+        //porneste procesul din #core
         initialize(new thecode(deviceControl), config);
 
     }

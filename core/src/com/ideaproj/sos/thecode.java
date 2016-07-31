@@ -12,9 +12,10 @@ import java.util.Random;
 
 public class thecode extends Game {
 
-    private DeviceControl deviceControl; // 1 variabila
-    private ResourceLoader resources; // a 2-a variabila
+    private DeviceControl deviceControl;
+    private ResourceLoader resources;
 
+    //starile aplicatiei (ecranele)
     public enum stats {
         SplashReady,
         Menu,
@@ -29,7 +30,7 @@ public class thecode extends Game {
 
     public static stats gameStatus = null;
 
-    public thecode(com.ideaproj.sos.tools.DeviceControl deviceControl) {
+    public thecode(DeviceControl deviceControl) {
         super();
         this.deviceControl = deviceControl;
     }
@@ -38,17 +39,15 @@ public class thecode extends Game {
     public void create() {
         setScreen(new SplashScreen(this));
 
+        //creaza un thread pentru incarcarea resurselor si afisarea splash=screenului
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("stage 1");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("stage 2");
                         resources = new ResourceLoader();
                         resources.initializeResources();
-                        System.out.println("stage 3");
                         gameStatus = stats.SplashReady;
                     }
                 });
@@ -70,6 +69,7 @@ public class thecode extends Game {
         return resources;
     }
 
+    //returneaza in int random intre min si max
     public static int getRandom(int min, int max) {
         Random rand = new Random();
         int n = max - min + 1;

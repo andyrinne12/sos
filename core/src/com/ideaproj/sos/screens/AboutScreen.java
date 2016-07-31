@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ideaproj.sos.tools.GameRenderer;
 import com.ideaproj.sos.tools.ResourceLoader;
 
-/**
- * Created by Andy on 13.07.2016.
- */
+
 public class AboutScreen {
 
     private MainScreen screen;
