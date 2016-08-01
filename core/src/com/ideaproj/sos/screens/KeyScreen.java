@@ -53,7 +53,7 @@ public class KeyScreen {
         this.soundEnabled = false;
         this.keyboardFocus = true;
         this.messageFocus = false;
-        messageText = new char[maxLength];
+        messageText = new char[0];
 
         this.deviceControl = screen.getDeviceControl();
         //  if(deviceControl.isCamera())
@@ -107,7 +107,7 @@ public class KeyScreen {
                     }
                 }
 
-                System.out.println(messageText);
+                // System.out.println(messageText);
 
             }
 
@@ -276,7 +276,7 @@ public class KeyScreen {
         renderStartTransmittButton(batcher, shaper);
         renderAddAltitudeButton(batcher, shaper);
         renderSpeedButton(batcher, shaper);
-    }//aici desenezi butoanele? aici desenez tot damai
+    }//desenez toate elementele
 
     private void renderTextScreen(SpriteBatch batcher, ShapeRenderer shaper) {
         //mini-screen for text
@@ -302,7 +302,7 @@ public class KeyScreen {
             font.draw(batcher, String.valueOf(messageText[i]), 50 + i % 31 * 20, 700 + ((i / 31)) * 35);
         }
         batcher.end();
-    }//..ecranul e 720 latime pe 1280 i daca acum e 490 si pana jos e 1280 iti dai seama ca 10 unitati e nesemnificativ
+    }
 
     private void renderEnableLightButton(SpriteBatch batcher, ShapeRenderer shaper) {
         shaper.begin(ShapeRenderer.ShapeType.Filled);
@@ -512,6 +512,10 @@ public class KeyScreen {
                 messageFocus = false;
                 keyboardFocus = true;
                 ch = '\0';
+                currentLetter = 0;
+                Gdx.input.cancelVibrate();
+                deviceControl.turnOffFlash();
+                beep.stop();
             }
         } else if (touchX >= 15 && touchX <= 75 && touchY >= 975 && touchY <= 1035) {
             if (speed >= 1)
@@ -522,7 +526,9 @@ public class KeyScreen {
         } else if (touchX >= 60 && touchX <= 230 && touchY >= 1120 && touchY <= 1180) {
             int height = deviceControl.getHeight();
             String tempText = String.copyValueOf(messageText);
+          //  if(messageText!=null)
             tempText = tempText + String.valueOf(height);
+         //   else tempText = String.valueOf(height);
             messageText = tempText.toCharArray();
         }
     }
@@ -530,6 +536,8 @@ public class KeyScreen {
     // ciclul principal infinit
 
     public void update(float delta) {
+
+        System.out.println(messageText);
 
         //se actualizeaza cronometrul
         watch += delta;
@@ -750,7 +758,7 @@ public class KeyScreen {
         else if (ch == '0') handle0();
     }
 
-    //all verifies etc.
+    //all verifies and letter transmitting for button pressing (on keyboard)
 
     private void verifyQ(float screenX, float screenY, float ratioX, float ratioY) {
         int x = coords[11][1];
@@ -1563,7 +1571,7 @@ public class KeyScreen {
                 cont++;
             }
         } else if (cont == 4) {
-            if (watch >= 3 / speed) {
+            if (watch >= 1 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -1806,11 +1814,11 @@ public class KeyScreen {
         int y2 = y + 60;
 
         if (messageFocus || (screenX >= x * ratioX && screenX <= x2 * ratioX && screenY >= y * ratioY && screenY <= y2 * ratioY)) {
-            if (ch == 'H' && keyboardFocus) {
+            if (ch == 'J' && keyboardFocus) {
                 ch = ' ';
                 beep.stop();
             } else {
-                ch = 'H';
+                ch = 'J';
                 watch = 0;
                 cont = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
@@ -1834,11 +1842,11 @@ public class KeyScreen {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (soundEnabled) beep.play();
-                if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
+                if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
         } else if (cont == 2) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -1847,13 +1855,13 @@ public class KeyScreen {
         } else if (cont == 3) {
             if (watch >= 1 / speed) {
                 watch = 0;
-                if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
+                if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (soundEnabled) beep.play();
                 cont++;
             }
         } else if (cont == 4) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -1864,11 +1872,11 @@ public class KeyScreen {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOnFlash();
                 if (soundEnabled) beep.play();
-                if (vibrationEnabled) Gdx.input.vibrate((int) (1000 / speed));
+                if (vibrationEnabled) Gdx.input.vibrate((int) (3000 / speed));
                 cont++;
             }
         } else if (cont == 6) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -2048,7 +2056,7 @@ public class KeyScreen {
 
     private void handleZ() {
         if (cont == 0) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -2498,7 +2506,7 @@ public class KeyScreen {
 
     private void handleM() {
         if (cont == 0) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();
@@ -2513,7 +2521,7 @@ public class KeyScreen {
                 cont++;
             }
         } else if (cont == 2) {
-            if (watch >= 1 / speed) {
+            if (watch >= 3 / speed) {
                 watch = 0;
                 if (lightEnabled) deviceControl.turnOffFlash();
                 if (soundEnabled) beep.stop();

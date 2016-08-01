@@ -55,7 +55,7 @@ public class IntroReceiveScreen {
                 {5, 1, 1, 1, 1, 3},  // 4
                 {5, 1, 1, 1, 1, 1},  // 5
                 {5, 3, 1, 1, 1, 1},  // 6
-                {5, 3, 3, 3, 3, 3},  // 7
+                {5, 3, 3, 1, 1, 1},  // 7
                 {5, 3, 3, 3, 1, 1},  // 8
                 {5, 3, 3, 3, 3, 1},  // 5
                 {5, 3, 3, 3, 3, 3},  // 0
@@ -102,7 +102,7 @@ public class IntroReceiveScreen {
 
     public void update(float delta) {
 
-        System.out.println(posLetter);
+        // System.out.println(posLetter);
         //     for (int i = 1; i <= posLetter; i++)
         //         System.out.print(currentText[i] + " ");
     }
@@ -186,7 +186,7 @@ public class IntroReceiveScreen {
         font.setColor(lightGold);
         font.getData().setScale(1f, 1f);
         for (int i = 1; i <= posLetter; i++)
-            font.draw(batcher, String.valueOf(currentText[i]), 60 + (i % 13 != 0 ? i % 13 - 1 : 13 - 1) * 50, 435 + ((i / 13)) * 60);
+            font.draw(batcher, String.valueOf(currentText[i]), 60 + (i % 12 != 0 ? i % 12 - 1 : 12 - 1) * 50, 435 + ((i % 12 != 0 ? i/12 : i/12-1) * 60));
         batcher.end();
 
     }
@@ -345,7 +345,7 @@ public class IntroReceiveScreen {
 
     private boolean bindLetter(int myPos) {
         boolean ok = false;
-        System.out.println("BINDING BINDING BINDING BINDING");
+        // System.out.println("BINDING BINDING BINDING BINDING");
         for (int i = 1; i <= 36; i++) {
             boolean letterFound = true;
             if (posSign == morseCode[i][0]) {

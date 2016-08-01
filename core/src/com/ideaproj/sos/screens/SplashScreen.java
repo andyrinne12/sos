@@ -59,7 +59,7 @@ public class SplashScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        System.out.println(thecode.gameStatus);
+        // System.out.println(thecode.gameStatus);
 
         if(thecode.gameStatus == thecode.stats.SplashReady && Gdx.input.justTouched()){
             thecode.gameStatus = thecode.stats.Menu;

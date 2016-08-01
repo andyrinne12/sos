@@ -192,7 +192,7 @@ public class MainScreen implements Screen {
 
     public void mainRender(GameRenderer renderer) {
 
-        System.out.println(thecode.gameStatus);
+        // System.out.println(thecode.gameStatus);
 
         if (thecode.gameStatus == thecode.stats.Menu)
             render(renderer);

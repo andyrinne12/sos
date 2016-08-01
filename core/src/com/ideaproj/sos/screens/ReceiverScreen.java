@@ -66,7 +66,7 @@ public class ReceiverScreen {
                 {9, 1, -1, 1, -1, 1, -1, 1, -1, 3},  // 4
                 {9, 1, -1, 1, -1, 1, -1, 1, -1, 1},  // 5
                 {9, 3, -1, 1, -1, 1, -1, 1, -1, 1},  // 6
-                {9, 3, -1, 3, -1, 3, -1, 3, -1, 3},  // 7
+                {9, 3, -1, 3, -1, 1, -1, 1, -1, 1},  // 7
                 {9, 3, -1, 3, -1, 3, -1, 1, -1, 1},  // 8
                 {9, 3, -1, 3, -1, 3, -1, 3, -1, 1},  // 9
                 {9, 3, -1, 3, -1, 3, -1, 3, -1, 3},  // 0
@@ -116,9 +116,9 @@ public class ReceiverScreen {
         //   System.out.println("Default: " + actualTime);
         //          System.out.println("Light: "+ radius);
         //      System.out.println("Shadow: "+receivingShadow);
-        System.out.println("Current number" + posSign);
-               System.out.println("Current sign: " + currentLetter[posSign]);
-              System.out.println("Letter: " + posLetter);
+        // System.out.println("Current number" + posSign);
+        //       System.out.println("Current sign: " + currentLetter[posSign]);
+        //      System.out.println("Letter: " + posLetter);
 
 
         //valoare senzorului
@@ -134,7 +134,7 @@ public class ReceiverScreen {
             if (actualTime2 >= 0.03) {
                 actualTime2 = 0;
                 currentText[posLetter] = getChar(thecode.getRandom(1, 36));
-                System.out.println("CHANGED!");
+                // System.out.println("CHANGED!");
             }
         }
         else {actualTime2=0;}
@@ -466,11 +466,11 @@ public class ReceiverScreen {
         font.setColor(lightGold);
         font.getData().setScale(1f, 1f);
         for (int i = 1; i <= posLetter; i++)
-                     font.draw(batcher, String.valueOf(currentText[i]), 60 + (i%13!=0 ? i % 13 - 1:13-1) * 50, 260 + ((i / 13)) * 60);
+                     font.draw(batcher, String.valueOf(currentText[i]), 60 + (i % 12 != 0 ? i % 12 - 1 : 12 - 1) * 50, 260 +((i % 12 != 0 ? i/12 : i/12-1) * 60));
         if(receivingLight || receivingShadow) {
             nextLetter = posLetter ;
-            font.draw(batcher, String.valueOf(currentText[posLetter]), 60 + (posLetter%13!=0 ? posLetter % 13 - 1:13-1) * 50, 260 + ((posLetter / 13)) * 60);
-            System.out.println("XX");
+            font.draw(batcher, String.valueOf(currentText[posLetter]),  60 + (posLetter % 12 != 0 ? posLetter % 12 - 1 : 12 - 1) * 50, 260 +((posLetter % 12 != 0 ? posLetter/12 : posLetter/12-1) * 60));
+            // System.out.println("XX");
         }
         batcher.end();
     }
@@ -495,7 +495,7 @@ public class ReceiverScreen {
 
     private boolean bindLetter(int myPos) {
         boolean ok = false;
-        System.out.println("BINDING BINDING BINDING BINDING");
+        // System.out.println("BINDING BINDING BINDING BINDING");
         for (int i = 1; i <= 36; i++) {
             boolean letterFound = true;
             if (posSign == morseCode[i][0]) {

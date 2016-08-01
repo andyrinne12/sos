@@ -16,8 +16,8 @@ public class AboutScreen {
     private MainScreen screen;
     private Color grey1, grey2;
     private float gameWidth, gameHeight, textY, lastY, touchX, touchY, watch;
-    private Texture aboutBackgroundT, aboutTextT, aboutTextT2;
-    private TextureRegion aboutBackground, aboutText, aboutText2;
+    private Texture aboutBackgroundT,aboutTextT111,aboutTextT112,aboutTextT121,aboutTextT122,aboutTextT211,aboutTextT212,aboutTextT221,aboutTextT222;
+    private TextureRegion aboutBackground, aboutText111,aboutText112,aboutText121,aboutText122,aboutText211,aboutText212,aboutText221,aboutText222;
     private GameRenderer renderer;
 
     public AboutScreen(MainScreen screen) {
@@ -40,14 +40,39 @@ public class AboutScreen {
         aboutBackground = new TextureRegion(aboutBackgroundT);
         aboutBackground.flip(false, true);
 
-        aboutTextT = resources.textAbout;
-        aboutTextT2 = resources.textAbout2;
+        aboutTextT111 = resources.textAbout111;
+        aboutTextT112 = resources.textAbout112;
+        aboutTextT121 = resources.textAbout121;
+        aboutTextT122 = resources.textAbout122;
+        aboutTextT211 = resources.textAbout211;
+        aboutTextT212 = resources.textAbout212;
+        aboutTextT221 = resources.textAbout221;
+        aboutTextT222 = resources.textAbout222;
 
-        aboutText = new TextureRegion(aboutTextT);
-        aboutText.flip(false, true);
 
-        aboutText2 = new TextureRegion(aboutTextT2);
-        aboutText2.flip(false, true);
+        aboutText111 = new TextureRegion(aboutTextT111);
+        aboutText111.flip(false, true);
+
+        aboutText112 = new TextureRegion(aboutTextT112);
+        aboutText112.flip(false, true);
+
+        aboutText121 = new TextureRegion(aboutTextT121);
+        aboutText121.flip(false, true);
+
+        aboutText122 = new TextureRegion(aboutTextT122);
+        aboutText122.flip(false, true);
+
+        aboutText211 = new TextureRegion(aboutTextT211);
+        aboutText211.flip(false, true);
+
+        aboutText212 = new TextureRegion(aboutTextT212);
+        aboutText212.flip(false, true);
+
+        aboutText221 = new TextureRegion(aboutTextT221);
+        aboutText221.flip(false, true);
+
+        aboutText222 = new TextureRegion(aboutTextT222);
+        aboutText222.flip(false, true);
     }
 
     public void render(GameRenderer renderer) {
@@ -58,10 +83,17 @@ public class AboutScreen {
         batcher.begin();
         batcher.draw(aboutBackground, 0, 0, gameWidth * 2, gameHeight * 2);
         batcher.enableBlending();
-        batcher.draw(aboutText, 0, textY + 240, 720, 5100);
-        batcher.draw(aboutText2, 0, textY + 240 + 5100, 720, 5100);
+        batcher.draw(aboutText111, 0, textY + 240, 720, 1275);
+        batcher.draw(aboutText112, 0, textY + 240 + 1275*1, 720, 1275);
+        batcher.draw(aboutText121, 0, textY + 240 + 1275*2, 720, 1275);
+        batcher.draw(aboutText122, 0, textY + 240 + 1275*3, 720, 1275);
+        batcher.draw(aboutText211, 0, textY + 240 + 1275*4, 720, 1275);
+        batcher.draw(aboutText212, 0, textY + 240 + 1275*5, 720, 1275);
+        batcher.draw(aboutText221, 0, textY + 240 + 1275*6, 720, 1275);
+        batcher.draw(aboutText222, 0, textY + 240 + 1275*7, 720, 1275);
 
-        System.out.println(lastY + " " + touchY);
+
+        //System.out.println(lastY + " " + touchY);
         batcher.end();
 
         int barLength = (int) ((gameHeight * 2 - 260) * (gameHeight * 2 - 240) / 10200);
@@ -98,3 +130,5 @@ public class AboutScreen {
 
 
 }
+
+//5205 linii
