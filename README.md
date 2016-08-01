@@ -64,3 +64,18 @@ Al treilea buton ne introduce in meniul pentru decodarea manuală. Se poate înt
 În meniul Documentation din ecranul principal va poate oferi mai multe informatii cu privire la istoria Codului Morse, utilizari ale acestuia sau modalitati de invatare.
 </p>
 
+#Fisiere continute
+
+<p>
+Fisiere ce aparțin suportului Gradle: 'settings.gradle', 'gradlew', 'gradlew.bat', 'gradle.properties', 'build.gradle', 'gradle/wrapper/gradle-wrapper.jar', 'gradle/wrapper/gradle-wrapper.properties', 'android/build.gradle, project.properties', 'core/build.gradle'
+<br><br>
+Fisiere nefolosite: folder: 'desktop/...' 
+<br><br>
+Surse Java scrise de noi: 'core/src/com/ideaproj/thecode.java' 'core/src/com/ideaproj/screens/AboutScreen.java, CreditsScreen.java, IntroReceiveScreen.java, KeyScreen.java, MainScreen.java, ReceiverScreen.java, SplashScreen.java' 'core/src/com/ideaproj/tools/DeviceControl.java, GameRenderer.java, InputHandler.java, ResourceLoader.java' 'android/src/com/android/ideaproj/sos/AndroidDeviceController.java, AndroidLauncher.java'
+<br<br>
+Manifest: 'android/AndroidManifest.xml'
+<br><br>
+Resurse: 'android/assets/...', ' 'android/res/...'
+<br><br>
+Librariile LibGDX folosite se află pe un repository online din Maven și sunt accesate de fisierele Gradle( se pot vizualiza link-urile in fisierele gradle.build): com.badlogic.gdx
+
