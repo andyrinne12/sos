@@ -1,7 +1,7 @@
 #SOS: COD MORSE 
 created by <b>Crimson Night Studio</b>
 
-Version <b>1.1</b>
+Version <b>1.0.2</b>
 
 #Cerinte de sistem
 
