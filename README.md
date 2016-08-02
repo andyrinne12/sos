@@ -75,7 +75,7 @@ Fisiere nefolosite: folder: 'desktop/...'
 <br><br>
 Surse Java scrise de noi: 'core/src/com/ideaproj/thecode.java' 'core/src/com/ideaproj/screens/AboutScreen.java, CreditsScreen.java, IntroReceiveScreen.java, KeyScreen.java, MainScreen.java, ReceiverScreen.java, SplashScreen.java' 'core/src/com/ideaproj/tools/DeviceControl.java, GameRenderer.java, InputHandler.java, ResourceLoader.java' 'android/src/com/android/ideaproj/sos/AndroidDeviceController.java, AndroidLauncher.java'
 <br><br>
-Fisier Manifest: 'android/AndroidManifest.xml'
+Fisier Manifest(auto-generat prin LibGDX, doar editat de noi): 'android/AndroidManifest.xml'
 <br><br>
 Resurse: 'android/assets/...', ' 'android/res/...'
 <br><br>
