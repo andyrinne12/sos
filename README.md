@@ -6,6 +6,7 @@ Version <b>1.1</b>
 #Cerinte de sistem
 
 <b>Hardware:</b> <br>Telefon mobil cu difuzor, lanternă si senzorul de lumina frontal.
+<br>(optional)Barometru
 <br>Minim 64MB memorie RAM
 
 <b>Software:</b>
@@ -13,8 +14,9 @@ Version <b>1.1</b>
 
 #Update logs
 
-<b>-version 1.1</b>
-<br>//updates
+<b>-version 1.0.2</b>
+<br>-fixate probleme la transmiterea unor litere la Code Transmission
+<br>-fixata problema lipsei textului la Documentation
 
 
 #Prezentare
